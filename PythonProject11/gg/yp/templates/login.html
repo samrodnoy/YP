@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Обувной магазин</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="msg {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="tabs">
+        <button onclick="switchTab('login')" id="tab-login" class="tab active">Вход</button>
+        <button onclick="switchTab('register')" id="tab-register" class="tab">Регистрация</button>
+    </div>
+
+    <div id="panel-login" class="panel">
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Логин" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+
+    <div id="panel-register" class="panel hidden">
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Логин" required>
+            <input type="text" name="full_name" placeholder="ФИО" required>
+            <input type="password" name="password1" placeholder="Пароль" required>
+            <input type="password" name="password2" placeholder="Повторите пароль" required>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <form method="POST" action="{% url 'guest' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-guest">Войти как гость</button>
+    </form>
+</div>
+
+<script>
+    function switchTab(tab) {
+        document.getElementById('panel-login').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('panel-register').classList.toggle('hidden', tab !== 'register');
+        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+        document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'register') switchTab('register');
+</script>
+</body>
+</html>
